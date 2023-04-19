@@ -11,16 +11,16 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'image-webpack-loader'],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset',
         parser: {
-	  dataUrlCondition: {
-	    maxSize: 3 * 1024, // 3 KB
-	  },
-	},
+          dataUrlCondition: {
+            maxSize: 3 * 1024, // 3 KB
+          },
+        },
       },
     ],
   },
