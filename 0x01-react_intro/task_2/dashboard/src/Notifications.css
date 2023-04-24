@@ -1,0 +1,7 @@
+.notification-item[data-priority="default"] {
+  color: blue;
+}
+
+.notification-item[data-priority="urgent"] {
+  color: red;
+}
