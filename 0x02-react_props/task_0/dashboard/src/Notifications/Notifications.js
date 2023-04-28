@@ -1,9 +1,9 @@
 import React from 'react';
 import { getLatestNotification } from '../utils/utils';
-import icon from '../assets/close-icon.png';
+import close-icon from '../assets/close-icon.png';
 import '../Notifications/Notifications.css';
 
-function Notify() {
+function Notifications() {
   return (
     <div className="Notifications">
       <button style={{ position: 'absolute', right: '0' }} aria-label="Close" onClick={() => console.log('Close button has been clicked')}>
@@ -19,4 +19,4 @@ function Notify() {
   );
 }
 
-export default Notify;
+export default Notifications;
