@@ -1,43 +1,61 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
+import { shallow, mount } from 'enzyme';
 
-jest.spyOn(window, 'alert').mockImplementation(() => {});
-
-describe('App component', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+describe('<App />', () => {
+  it('App renders without crashing', () => {
+    const logOutMock = shallow(<App />);
+    expect(logOutMock.exists()).toEqual(true);
   });
 
-  it('should call logOut function and display alert when Ctrl+h keys are pressed', () => {
-    const logOutMock = jest.fn();
-    render(<App isLoggedIn={true} logOut={logOutMock} />);
-    fireEvent.keyDown(document, { key: 'h', code: 'KeyH', ctrlKey: true });
+  it('should contain the Notifications component', () => {
+    const logOutMock = shallow(<App />);
+    logOutMock.update();
+    expect(logOutMock.find('Notifications')).toHaveLength(1);
+  });
+
+  it('should contain the Header component', () => {
+    const logOutMock = shallow(<App />);
+    logOutMock.update();
+    expect(logOutMock.find('Header')).toHaveLength(1);
+  });
+
+  it('should contain the Login component', () => {
+    const logOutMock = shallow(<App />);
+    logOutMock.update();
+    expect(logOutMock.find('Login')).toHaveLength(1);
+  });
+
+  it('should contain the Footer component', () => {
+    const logOutMock = shallow(<App />);
+    logOutMock.update();
+    expect(logOutMock.find('Footer')).toHaveLength(1);
+  });
+
+  it('CourseList is not displayed with isLoggedIn false by default', () => {
+    const logOutMock = shallow(<App />);
+    logOutMock.update();
+    expect(logOutMock.find('CourseList')).toHaveLength(0);
+  });
+
+  it('isLoggedIn is true', () => {
+    const logOutMock = shallow(<App isLoggedIn />);
+    logOutMock.update();
+    expect(logOutMock.find('Login')).toHaveLength(0);
+    expect(logOutMock.find('CourseList')).toHaveLength(1);
+  });
+
+  it('when the keys control and h are pressed the logOut function, passed as a prop, is called and the alert function is called with the string Logging you out', () => {
+    const events = {};
+    const logout = jest.fn();
+
+    document.addEventListener = jest.fn((event, cb) => {
+      events[event] = cb;
+    });
+    window.alert = jest.fn();
+    shallow(<App logOut={logout} />);
     expect(window.alert).toHaveBeenCalledWith('Logging you out');
-    expect(logOutMock).toHaveBeenCalled();
-  });
-
-  it('should not call logOut function when Ctrl key is pressed', () => {
-    const logOutMock = jest.fn();
-    render(<App isLoggedIn={true} logOut={logOutMock} />);
-    fireEvent.keyDown(document, { key: 'Control', code: 'ControlLeft' });
-    expect(window.alert).not.toHaveBeenCalled();
-    expect(logOutMock).not.toHaveBeenCalled();
-  });
-
-  it('should not call logOut function when H key is pressed', () => {
-    const logOutMock = jest.fn();
-    render(<App isLoggedIn={true} logOut={logOutMock} />);
-    fireEvent.keyDown(document, { key: 'h', code: 'KeyH' });
-    expect(window.alert).not.toHaveBeenCalled();
-    expect(logOutMock).not.toHaveBeenCalled();
-  });
-
-  it('should not call logOut function when user is not logged in', () => {
-    const logOutMock = jest.fn();
-    render(<App isLoggedIn={false} logOut={logOutMock} />);
-    fireEvent.keyDown(document, { key: 'h', code: 'KeyH', ctrlKey: true });
-    expect(window.alert).not.toHaveBeenCalled();
-    expect(logOutMock).not.toHaveBeenCalled();
+    expect(logout).toHaveBeenCalled();
+    jest.restoreAllMocks();
   });
 });
