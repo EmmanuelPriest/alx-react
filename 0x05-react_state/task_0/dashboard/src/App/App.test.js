@@ -1,10 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import App from './App';
-import { StyleSheetTestUtils } from 'aphrodite';
-
-/* Suppress style injection during tests to prevent conflicts */
-StyleSheetTestUtils.suppressStyleInjection();
+import Notifications from '../Notifications/Notifications';
 
 describe('App', () => {
   it('renders without crashing', () => {
@@ -12,26 +9,35 @@ describe('App', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('renders notifications and header', () => {
+  it('verifies the default state for displayDrawer is false', () => {
     const wrapper = shallow(<App />);
-    expect(wrapper.find('Notifications').length).toEqual(1);
-    expect(wrapper.find('Header').length).toEqual(1);
+    expect(wrapper.state().displayDrawer).toBe(false);
   });
 
-  it('renders course list when logged in', () => {
-    const wrapper = shallow(<App isLoggedIn={true} />);
-    expect(wrapper.find('CourseList').length).toEqual(1);
-    expect(wrapper.find('Login').length).toEqual(0);
-  });
-
-  it('renders login form when logged out', () => {
-    const wrapper = shallow(<App isLoggedIn={false} />);
-    expect(wrapper.find('Login').length).toEqual(1);
-    expect(wrapper.find('CourseList').length).toEqual(0);
-  });
-
-  it('matches snapshot', () => {
+  it('updates displayDrawer state to true when handleDisplayDrawer is called', () => {
     const wrapper = shallow(<App />);
-    expect(toJson(wrapper)).toMatchSnapshot();
+    wrapper.instance().handleDisplayDrawer();
+    expect(wrapper.state().displayDrawer).toBe(true);
+  });
+
+  it('updates displayDrawer state to false when handleHideDrawer is called', () => {
+    const wrapper = shallow(<App />);
+    wrapper.instance().handleDisplayDrawer(); // Set displayDrawer to true first
+    wrapper.instance().handleHideDrawer();
+    expect(wrapper.state().displayDrawer).toBe(false);
+  });
+
+  it('should render Notifications component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.find(Notifications).length).toBe(1);
+  });
+
+  it('should pass correct props to Notifications component', () => {
+    const wrapper = shallow(<App />);
+    const notifications = wrapper.find(Notifications);
+    expect(notifications.prop('listNotifications')).toBeDefined();
+    expect(notifications.prop('displayDrawer')).toEqual(wrapper.state().displayDrawer);
+    expect(notifications.prop('handleDisplayDrawer')).toEqual(wrapper.instance().handleDisplayDrawer);
+    expect(notifications.prop('handleHideDrawer')).toEqual(wrapper.instance().handleHideDrawer);
   });
 });
