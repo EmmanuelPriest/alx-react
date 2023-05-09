@@ -8,7 +8,6 @@ describe('Header', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
   });
-
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
