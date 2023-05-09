@@ -64,8 +64,8 @@ class Notifications extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { listNotifications } = this.props;
-    return nextProps.listNotifications.length > listNotifications.length;
+    const { displayDrawer, listNotifications } = this.props;
+    return nextProps.listNotifications.length > listNotifications.length || nextProps.displayDrawer !== displayDrawer;
   }
 
   markAsRead(id) {
@@ -73,11 +73,12 @@ class Notifications extends Component {
   }
 
   render() {
-    const { displayDrawer, listNotifications } = this.props;
+    const { displayDrawer, listNotifications, handleDisplayDrawer, handleHideDrawer } = this.props;
     return (
       <>
         <div
           className={css(styles.Notifications)}
+          onClick={handleDisplayDrawer}
           style={{ display: displayDrawer ? 'none' : 'block' }}
         >
           <p>Your notifications</p>
@@ -85,6 +86,7 @@ class Notifications extends Component {
         {displayDrawer && (
           <div className={css(styles.Notifications)}>
             <button
+              onClick={handleHideDrawer}
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -122,11 +124,15 @@ class Notifications extends Component {
 Notifications.defaultProps = {
   displayDrawer: false,
   listNotifications: [],
+  handleDisplayDrawer: () => {},
+handleHideDrawer: () => {},
 };
 
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
   listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
 };
 
 export default Notifications;
