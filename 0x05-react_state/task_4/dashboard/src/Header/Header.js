@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import holbertonLogo from '../assets/holberton-logo.jpg';
+import { AppContext } from '../App/AppContext';
 
 const styles = StyleSheet.create({
   header: {
@@ -18,21 +19,46 @@ const styles = StyleSheet.create({
     fontSize: '2rem',
     fontWeight: 'bold',
   },
+  logoutSection: {
+    fontWeight: 'bold',
+    cursor: 'pointer',
+  },
 });
 
-function Header() {
-  return (
-    <header className={css(styles.header)}>
-      <div>
-        <img
-          className={css(styles.headerLogo)}
-          src={holbertonLogo}
-          alt="Holberton Logo"
-        />
-      </div>
-      <h1 className={css(styles.headerTitle)}>School dashboard</h1>
-    </header>
-  );
+class Header extends Component {
+  static contextType = AppContext;
+
+  handleLogout = () => {
+    this.context.logOut();
+  };
+
+  render() {
+    const { isLoggedIn, user } = this.context;
+
+    return (
+      <>
+        <header className={css(styles.header)}>
+          <div>
+            <img
+              className={css(styles.headerLogo)}
+              src={holbertonLogo}
+              alt="Holberton Logo"
+            />
+          </div>
+          <h1 className={css(styles.headerTitle)}>School dashboard</h1>
+          {isLoggedIn && (
+            <div
+              id="logoutSection"
+              className={css(styles.logoutSection)}
+              onClick={this.handleLogout}
+            >
+              Welcome {user.email} (logout)
+            </div>
+          )}
+        </header>
+      </>
+    );
+  }
 }
 
 export default Header;
