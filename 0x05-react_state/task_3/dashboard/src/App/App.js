@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 import { getLatestNotification } from '../utils/utils';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import { AppContext } from '../App/AppContext';
 
 const styles = StyleSheet.create({
   body: {
@@ -43,61 +44,93 @@ const listNotifications = [
 class App extends Component {
   constructor(props) {
     super(props);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.state = {
+      displayDrawer: false,
+      user: {
+        email: '',
+        password: '',
+        isLoggedIn: false,
+      },
+      listNotifications: listNotifications,
+    };
+    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
+    this.handleHideDrawer = this.handleHideDrawer.bind(this);
+    this.logOut = this.logOut.bind(this);
+    this.logIn = this.logIn.bind(this);
+    this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
   }
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+  handleDisplayDrawer() {
+    this.setState({ displayDrawer: true });
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+  handleHideDrawer() {
+    this.setState({ displayDrawer: false });
   }
 
-  handleKeyDown(event) {
-    if (event.ctrlKey && event.key === 'h') {
-      alert('Logging you out');
-      this.props.logOut();
-    }
+  logOut() {
+    this.setState({
+      user: {
+        email: '',
+        password: '',
+        isLoggedIn: false,
+      },
+    });
+  }
+
+  logIn(email, password) {
+    this.setState({
+      user: {
+        email: email,
+        password: password,
+        isLoggedIn: true,
+      },
+    });
+  }
+
+  markNotificationAsRead(id) {
+    const updatedNotifications = this.state.listNotifications.filter((notif) => notif.id !== id);
+    this.setState({ listNotifications: updatedNotifications });
   }
 
   render() {
-    const { isLoggedIn } = this.props;
+    const { displayDrawer, user, listNotifications } = this.state;
 
     return (
-      <>
-        <Notifications listNotifications={listNotifications} />
+      <AppContext.Provider value={{ user: user, logOut: this.logOut, logIn: this.logIn }}>
+        <Notifications
+          listNotifications={listNotifications}
+          displayDrawer={displayDrawer}
+          handleDisplayDrawer={this.handleDisplayDrawer}
+          handleHideDrawer={this.handleHideDrawer}
+          markNotificationAsRead={this.markNotificationAsRead}
+        />
         <div className={css(styles.body)}>
           <Header />
         </div>
         <BodySectionWithMarginBottom title="Course list">
-          {!isLoggedIn ? <Login /> : <CourseList listCourses={listCourses} />}
+          {user.isLoggedIn ? <CourseList listCourses={listCourses} /> : <Login />}
         </BodySectionWithMarginBottom>
-        <BodySectionWithMarginBottom title="Log in to continue">
-          {!isLoggedIn ? <Login /> : null}
-        </BodySectionWithMarginBottom>
-        <BodySection title="News from the School">
-          <p>
-            We are glad to announce to you that in the coming days the School is going to add some new interesting and
-            exciting courses to the ones already on ground.
-          </p>
-        </BodySection>
-        <div className={css(styles.footer)}>
-          <Footer />
-        </div>
-      </>
+        <Footer className={css(styles.footer)} />
+      </AppContext.Provider>
     );
   }
 }
 
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
   logOut: PropTypes.func,
+  logIn: PropTypes.func,
+  displayDrawer: PropTypes.bool,
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
+  markNotificationAsRead: PropTypes.func,
+  listNotifications: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    type: PropTypes.string,
+    value: PropTypes.string,
+    html: PropTypes.shape({ __html: PropTypes.string }),
+  })),
 };
 
 export default App;

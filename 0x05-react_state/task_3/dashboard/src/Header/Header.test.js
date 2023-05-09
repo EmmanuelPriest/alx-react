@@ -1,30 +1,48 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Header from './Header';
-
+import { AppContext } from '../App/AppContext';
 import { StyleSheetTestUtils } from 'aphrodite';
 
 describe('Header', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
   });
-
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
   it('renders without crashing', () => {
     const wrapper = shallow(<Header />);
-    expect(wrapper.exists()).toBe(true);
+    expect(wrapper.exists()).toEqual(true);
   });
 
-  it('renders an image and the header title', () => {
-    const wrapper = shallow(<Header />);
-    const img = wrapper.find('img');
-    const h1 = wrapper.find('h1');
+  it('does not render the logout section by default', () => {
+    const wrapper = shallow(
+      <AppContext.Provider value={{ isLoggedIn: false }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    expect(wrapper.find('#logoutSection')).toHaveLength(0);
+  });
 
-    expect(img).toHaveLength(1);
-    expect(h1).toHaveLength(1);
-    expect(h1.text()).toBe('School dashboard');
+  it('renders the logout section when isLoggedIn is true', () => {
+    const wrapper = shallow(
+      <AppContext.Provider value={{ isLoggedIn: true, user: { email: 'test@test.com' } }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    expect(wrapper.find('#logoutSection')).toHaveLength(1);
+  });
+
+  it('calls handleLogout when logout link is clicked', () => {
+    const logOutMock = jest.fn();
+    const wrapper = shallow(
+      <AppContext.Provider value={{ isLoggedIn: true, user: { email: 'test@test.com' }, logOut: logOutMock }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    wrapper.find('#logoutSection').simulate('click');
+    expect(logOutMock).toHaveBeenCalled();
   });
 });
