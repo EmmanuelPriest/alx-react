@@ -7,4 +7,4 @@ function mergeDeeplyElements(page1, page2) {
   return mergedDeepPages;
 }
 
-export { mergeDeeplyElements };
+export default mergeDeeplyElements;
