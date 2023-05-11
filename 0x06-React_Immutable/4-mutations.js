@@ -9,9 +9,9 @@ const map = Map({
   6: 'Lucas',
 });
 
-const map2 = map.set({
-  2: 'Benjamin',
-  4: 'Oliver',
+const map2 = map.merge({
+  3: 'Benjamin',
+  5: 'Oliver',
 });
 
 export default { map, map2 };
