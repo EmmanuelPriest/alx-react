@@ -1,7 +1,7 @@
 import { List, is } from 'immutable';
 
 function concatElements(page1, page2) {
-  const concatPage = List([page1, page2]).map((pageArr) => List(pageArr);
+  const concatPage = List([page1, page2]).map((pageArr) => List(pageArr));
   return concatPage;
 }
 
