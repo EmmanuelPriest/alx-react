@@ -1,18 +1,16 @@
-import { List, is } from 'immutable';
+import { List, Map } from 'immutable';
 
+/* Concatenate page1 and page2 */
 function concatElements(page1, page2) {
-  const concatPage = List([page1, page2]).map((pageArr) => List(pageArr));
+  const concatPage = List([...page1, ...page2]);
   return concatPage;
 }
 
+/* Merge page1 and page2 but return content of page */
 function mergeElements(page1, page2) {
-  const mergePage = List([page1, page2]).map((pageObj) => {
-    if (is(pageObj, page2)) {
-      return List(Object.values(pageObj));
-    } else {
-      return List();
-    }
-  });
+  const mergePage = Map(page1).mergeWith((prev, next) => next, page2);
+  const mergedPage = List(mergePage.values());
+  return mergedPage;
 }
 
 export default { concatElements, mergeElements };
