@@ -10,4 +10,4 @@ const printBestStudents = (grades) => {
   console.log(filteredGrades.toJS());
 };
 
-export default printBestStudents;
+export { printBestStudents };
