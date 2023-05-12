@@ -15,10 +15,10 @@ const printBestStudents(grades) {
 
   const JSObject = filteredGrades.toJS();
 
-  Object.keys(JSObject).map((map1) => {
-    JSObject[map1].firstName = firstLetter(JSObject[map1].firstName);
-    JSObject[map1].lastName = firstLetter(JSObject[map1].lastName);
-    const obj = JSObject[map1];
+  Object.keys(JSObject).map((key) => {
+    JSObject[key].firstName = firstLetter(JSObject[key].firstName);
+    JSObject[key].lastName = firstLetter(JSObject[key].lastName);
+    const obj = JSObject[key];
     return obj;
   });
 
