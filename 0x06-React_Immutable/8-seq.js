@@ -1,13 +1,13 @@
 import { Seq } from 'immutable';
 
-const printBestStudents(grades) {
+function printBestStudents(grades) {
   const lazySeq = Seq(grades);
-  const filteredGrades = lazySeq.filter((student) => { 
+  const filteredGrades = lazySeq.filter((student) => {
     student.firstName.charAt(0).toUpperCase();
     const studentScore = student.score > 70;
     return studentScore;
   });
-  
+
   function firstLetter(string) {
     const firstLetterCap = string.charAt(0).toUpperCase() + string.slice(1);
     return firstLetterCap;
