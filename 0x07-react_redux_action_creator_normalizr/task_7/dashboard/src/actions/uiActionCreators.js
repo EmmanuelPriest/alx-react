@@ -51,7 +51,7 @@ export const loginFailure = () => ({
 export const loginRequest = (email, password) => (dispatch) => {
     dispatch(login());
 
-    // Perform the API request using fetch or a library like axios
+    /* Perform the API request using fetch or a library like axios */
     fetch('/login-success.json')
       .then((response) => {
         if (response.ok) {
