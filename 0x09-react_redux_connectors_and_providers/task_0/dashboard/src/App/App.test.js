@@ -1,8 +1,9 @@
 import React from 'react';
-import App from './App';
-import { shallow, mount } from 'enzyme';
+import App, { mapStateToProps } from './App';
+import { shallow } from 'enzyme';
 import { StyleSheetTestUtils } from 'aphrodite';
 import { AppContext } from './AppContext';
+import { fromJS } from 'immutable';
 
 describe('Test App.js', () => {
   beforeAll(() => {
@@ -149,5 +150,20 @@ describe('Test App.js', () => {
 
     expect(contextValues.markNotificationAsRead).toHaveBeenCalledWith(1);
     expect(wrapper.state('notifications')).toEqual([]);
+  });
+
+  // Create a new test suite to test mapStateToProps function
+  describe('mapStateToProps', () => {
+    it('returns the right object when passing the state', () => {
+      const state = {
+        ui: fromJS({
+          isLoggedIn: true,
+        }),
+      };
+
+      const props = mapStateToProps(state);
+
+      expect(props.isLoggedIn).toBe(true);
+    });
   });
 });
