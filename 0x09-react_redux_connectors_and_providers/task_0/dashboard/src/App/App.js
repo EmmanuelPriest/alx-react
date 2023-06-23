@@ -9,6 +9,7 @@ import { StyleSheet, css } from 'aphrodite';
 import { getLatestNotification } from '../utils/utils';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import { AppContext } from '../App/AppContext';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   body: {
