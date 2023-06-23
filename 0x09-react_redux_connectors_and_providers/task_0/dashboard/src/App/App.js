@@ -88,6 +88,12 @@ class App extends Component {
     });
   }
 
+  const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.ui.isLoggedIn,
+  };
+};
+
   markNotificationAsRead(id) {
     const updatedNotifications = this.state.listNotifications.filter((notif) => notif.id !== id);
     this.setState({ listNotifications: updatedNotifications });
