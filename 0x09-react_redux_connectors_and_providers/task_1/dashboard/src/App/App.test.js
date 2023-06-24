@@ -3,7 +3,7 @@ import App, { mapStateToProps } from './App';
 import { shallow } from 'enzyme';
 import { StyleSheetTestUtils } from 'aphrodite';
 import { AppContext } from './AppContext';
-import { fromJS } from 'immutable';
+import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
 
 describe('Test App.js', () => {
   beforeAll(() => {
@@ -21,9 +21,9 @@ describe('Test App.js', () => {
 
   it('verifies that Notifications renders correctly with show/hide functionality', () => {
     const wrapper = shallow(<App />);
-    wrapper.instance().handleDisplayDrawer();
+    wrapper.instance().props.displayNotificationDrawer();
     expect(wrapper.find('Notifications').prop('displayDrawer')).toEqual(true);
-    wrapper.instance().handleHideDrawer();
+    wrapper.instance().props.hideNotificationDrawer();
     expect(wrapper.find('Notifications').prop('displayDrawer')).toEqual(false);
   });
 
@@ -66,9 +66,9 @@ describe('Test App.js', () => {
     );
 
     wrapper.find('#logoutBtn').simulate('click');
-    expect(wrapper.state('user').email).toEqual('');
-    expect(wrapper.state('user').password).toEqual('');
-    expect(wrapper.state('user').isLoggedIn).toEqual(false);
+    expect(wrapper.instance().props.user.email).toEqual('');
+    expect(wrapper.instance().props.user.password).toEqual('');
+    expect(wrapper.instance().props.user.isLoggedIn).toEqual(false);
   });
 
   it('verifies that the state is updated correctly when the logIn function is called', () => {
@@ -89,9 +89,9 @@ describe('Test App.js', () => {
     );
 
     wrapper.instance().logIn('testuser@test.com', 'password');
-    expect(wrapper.state('user').email).toEqual('testuser@test.com');
-    expect(wrapper.state('user').password).toEqual('password');
-    expect(wrapper.state('user').isLoggedIn).toEqual(true);
+    expect(wrapper.instance().props.user.email).toEqual('testuser@test.com');
+    expect(wrapper.instance().props.user.password).toEqual('password');
+    expect(wrapper.instance().props.user.isLoggedIn).toEqual(true);
   });
 
   it('verifies that the state is updated correctly when the logOut function is called', () => {
@@ -112,58 +112,57 @@ describe('Test App.js', () => {
     );
 
     wrapper.instance().logOut();
-    expect(wrapper.state('user').email).toEqual('');
-    expect(wrapper.state('user').password).toEqual('');
-    expect(wrapper.state('user').isLoggedIn).toEqual(false);
+    expect(wrapper.instance().props.user.email).toEqual('');
+    expect(wrapper.instance().props.user.password).toEqual('');
+    expect(wrapper.instance().props.user.isLoggedIn).toEqual(false);
   });
 
   it('verifies that markNotificationAsRead function works as intended', () => {
     const contextValues = {
       user: {
-      email: 'testuser@test.com',
-      password: 'password',
-      isLoggedIn: true,
+        email: 'testuser@test.com',
+        password: 'password',
+        isLoggedIn: true,
       },
       logOut: jest.fn(),
       logIn: jest.fn(),
       markNotificationAsRead: jest.fn(),
     };
-    const wrapper = mount(
+    const wrapper = shallow(
       <AppContext.Provider value={contextValues}>
         <App />
       </AppContext.Provider>
     );
 
     // add a new notification to the list
-    wrapper.setState({
-      notifications: [
-        {
-          id: 1,
-          type: 'default',
-          value: 'test notification',
-	},
-      ],
+    wrapper.instance().props.listNotifications.push({
+      id: 1,
+      type: 'default',
+      value: 'test notification',
     });
 
     // click the mark as read button for the new notification
-    wrapper.find('#markAsReadBtn-1').simulate('click');
+    wrapper.instance().markNotificationAsRead(1);
 
     expect(contextValues.markNotificationAsRead).toHaveBeenCalledWith(1);
-    expect(wrapper.state('notifications')).toEqual([]);
+    expect(wrapper.instance().props.listNotifications).toEqual([]);
   });
 
-  // Create a new test suite to test mapStateToProps function
   describe('mapStateToProps', () => {
     it('returns the right object when passing the state', () => {
       const state = {
-        ui: fromJS({
+        ui: {
           isLoggedIn: true,
-        }),
+        },
+        isNotificationDrawerVisible: true,
+        notifications: [],
       };
 
       const props = mapStateToProps(state);
 
       expect(props.isLoggedIn).toBe(true);
+      expect(props.displayDrawer).toBe(true);
+      expect(props.listNotifications).toEqual([]);
     });
   });
 });
