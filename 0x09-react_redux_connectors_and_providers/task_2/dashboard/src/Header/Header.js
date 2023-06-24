@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import holbertonLogo from '../assets/holberton-logo.jpg';
-import { AppContext } from '../App/AppContext';
+import { connect } from 'react-redux';
+import { logout } from '../actions/authActionCreators';
 
 const styles = StyleSheet.create({
   header: {
@@ -25,40 +26,41 @@ const styles = StyleSheet.create({
   },
 });
 
-class Header extends Component {
-  static contextType = AppContext;
-
-  handleLogout = () => {
-    this.context.logOut();
+const Header = ({ isLoggedIn, user, logout }) => {
+  const handleLogout = () => {
+    logout();
   };
 
-  render() {
-    const { isLoggedIn, user } = this.context;
-
-    return (
-      <>
-        <header className={css(styles.header)}>
-          <div>
-            <img
-              className={css(styles.headerLogo)}
-              src={holbertonLogo}
-              alt="Holberton Logo"
-            />
+  return (
+    <>
+      <header className={css(styles.header)}>
+        <div>
+          <img
+            className={css(styles.headerLogo)}
+            src={holbertonLogo}
+            alt="Holberton Logo"
+          />
+        </div>
+        <h1 className={css(styles.headerTitle)}>School dashboard</h1>
+        {isLoggedIn && (
+          <div
+            id="logoutSection"
+            className={css(styles.logoutSection)}
+            onClick={handleLogout}
+          >
+            Welcome {user.email} (logout)
           </div>
-          <h1 className={css(styles.headerTitle)}>School dashboard</h1>
-          {isLoggedIn && (
-            <div
-              id="logoutSection"
-              className={css(styles.logoutSection)}
-              onClick={this.handleLogout}
-            >
-              Welcome {user.email} (logout)
-            </div>
-          )}
-        </header>
-      </>
-    );
-  }
-}
+        )}
+      </header>
+    </>
+  );
+};
 
-export default Header;
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.user.isLoggedIn,
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps, { logout })(Header);
