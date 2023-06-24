@@ -1,25 +1,19 @@
-import { SET_LOADING_STATE, FETCH_NOTIFICATIONS_SUCCESS } from './notificationActionTypes';
+import { MARK_AS_READ, SET_TYPE_FILTER } from './notificationActionTypes';
 
-export const setLoadingState = (isLoading) => ({
-  type: SET_LOADING_STATE,
-  isLoading,
+export const markAsRead = (index) => ({
+  type: MARK_AS_READ,
+  index,
 });
 
-export const setNotifications = (notifications) => ({
-  type: FETCH_NOTIFICATIONS_SUCCESS,
-  notifications,
+export const setNotificationFilter = (filter) => ({
+  type: SET_TYPE_FILTER,
+  filter,
 });
 
-export const fetchNotifications = () => (dispatch) => {
-  dispatch(setLoadingState(true));
-  fetch('task_4/dashboard/dist/notifications.json')
-    .then((response) => response.json())
-    .then((data) => {
-      dispatch(setNotifications(data));
-      dispatch(setLoadingState(false));
-    })
-    .catch((error) => {
-      console.error('Error fetching notifications:', error);
-      dispatch(setLoadingState(false));
-    });
+export const boundMarkAsRead = (index) => dispatch => {
+  dispatch(markAsRead(index));
+};
+
+export const boundSetNotificationFilter = (filter) => dispatch => {
+  dispatch(setNotificationFilter(filter));
 };
