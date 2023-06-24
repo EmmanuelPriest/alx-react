@@ -12,37 +12,29 @@ describe('Header', () => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
+  describe('Header component', () => {
   it('renders without crashing', () => {
-    const wrapper = shallow(<Header />);
-    expect(wrapper.exists()).toEqual(true);
+    shallow(<Header />);
   });
 
   it('does not render the logout section by default', () => {
-    const wrapper = shallow(
-      <AppContext.Provider value={{ isLoggedIn: false }}>
-        <Header />
-      </AppContext.Provider>
-    );
+    const wrapper = shallow(<Header isLoggedIn={false} />);
     expect(wrapper.find('#logoutSection')).toHaveLength(0);
   });
 
   it('renders the logout section when isLoggedIn is true', () => {
     const wrapper = shallow(
-      <AppContext.Provider value={{ isLoggedIn: true, user: { email: 'test@test.com' } }}>
-        <Header />
-      </AppContext.Provider>
+      <Header isLoggedIn={true} user={{ email: 'test@test.com' }} />
     );
     expect(wrapper.find('#logoutSection')).toHaveLength(1);
   });
 
-  it('calls handleLogout when logout link is clicked', () => {
-    const logOutMock = jest.fn();
+  it('calls logout function when logout link is clicked', () => {
+    const logoutMock = jest.fn();
     const wrapper = shallow(
-      <AppContext.Provider value={{ isLoggedIn: true, user: { email: 'test@test.com' }, logOut: logOutMock }}>
-        <Header />
-      </AppContext.Provider>
+      <Header isLoggedIn={true} user={{ email: 'test@test.com' }} logout={logoutMock} />
     );
     wrapper.find('#logoutSection').simulate('click');
-    expect(logOutMock).toHaveBeenCalled();
+    expect(logoutMock).toHaveBeenCalled();
   });
 });

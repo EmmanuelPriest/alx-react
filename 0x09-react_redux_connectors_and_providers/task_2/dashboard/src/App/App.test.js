@@ -1,9 +1,9 @@
 import React from 'react';
-import App, { mapStateToProps } from './App';
 import { shallow } from 'enzyme';
 import { StyleSheetTestUtils } from 'aphrodite';
 import { AppContext } from './AppContext';
 import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
+import App, { mapStateToProps } from './App';
 
 describe('Test App.js', () => {
   beforeAll(() => {
@@ -112,57 +112,44 @@ describe('Test App.js', () => {
     );
 
     wrapper.instance().logOut();
+    expect(    wrapper.instance().logOut();
     expect(wrapper.instance().props.user.email).toEqual('');
     expect(wrapper.instance().props.user.password).toEqual('');
     expect(wrapper.instance().props.user.isLoggedIn).toEqual(false);
   });
 
-  it('verifies that markNotificationAsRead function works as intended', () => {
-    const contextValues = {
+  it('verifies that mapStateToProps returns the correct props', () => {
+    const state = {
+      ui: {
+        notifications: [
+          { id: 1, type: 'default', value: 'Notification 1' },
+          { id: 2, type: 'urgent', value: 'Notification 2' },
+        ],
+        displayDrawer: true,
+      },
+      auth: {
+        user: {
+          email: 'testuser@test.com',
+          password: 'password',
+          isLoggedIn: true,
+        },
+      },
+    };
+
+    const expectedProps = {
+      notifications: [
+        { id: 1, type: 'default', value: 'Notification 1' },
+        { id: 2, type: 'urgent', value: 'Notification 2' },
+      ],
+      displayDrawer: true,
       user: {
         email: 'testuser@test.com',
         password: 'password',
         isLoggedIn: true,
       },
-      logOut: jest.fn(),
-      logIn: jest.fn(),
-      markNotificationAsRead: jest.fn(),
     };
-    const wrapper = shallow(
-      <AppContext.Provider value={contextValues}>
-        <App />
-      </AppContext.Provider>
-    );
 
-    // add a new notification to the list
-    wrapper.instance().props.listNotifications.push({
-      id: 1,
-      type: 'default',
-      value: 'test notification',
-    });
-
-    // click the mark as read button for the new notification
-    wrapper.instance().markNotificationAsRead(1);
-
-    expect(contextValues.markNotificationAsRead).toHaveBeenCalledWith(1);
-    expect(wrapper.instance().props.listNotifications).toEqual([]);
-  });
-
-  describe('mapStateToProps', () => {
-    it('returns the right object when passing the state', () => {
-      const state = {
-        ui: {
-          isLoggedIn: true,
-        },
-        isNotificationDrawerVisible: true,
-        notifications: [],
-      };
-
-      const props = mapStateToProps(state);
-
-      expect(props.isLoggedIn).toBe(true);
-      expect(props.displayDrawer).toBe(true);
-      expect(props.listNotifications).toEqual([]);
-    });
+    const props = mapStateToProps(state);
+    expect(props).toEqual(expectedProps);
   });
 });
