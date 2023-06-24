@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, componentDidMount } from 'react';
 import PropTypes from 'prop-types';
 import NotificationItem from './NotificationItem';
 import NotificationItemShape from './NotificationItemShape';
@@ -58,6 +58,10 @@ const fade = keyframes({
 });
 
 class Notifications extends PureComponent {
+  componentDidMount() {
+    this.props.fetchNotifications();
+  }
+
   markNotificationAsRead(id) {
     console.log(`Notification ${id} has been marked as read`);
   }
@@ -126,3 +130,5 @@ Notifications.propTypes = {
   handleHideDrawer: PropTypes.func,
   markNotificationAsRead: PropTypes.func,
 };
+
+export default Notifications;
