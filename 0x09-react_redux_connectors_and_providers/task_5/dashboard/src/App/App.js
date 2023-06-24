@@ -37,13 +37,7 @@ const listCourses = [
   { id: 3, name: 'React', credit: 40 },
 ];
 
-const listNotifications = [
-  { id: 1, type: 'default', value: 'New course available' },
-  { id: 2, type: 'urgent', value: 'New resume available' },
-  { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
-];
-
-const App = ({ user, isLoggedIn, displayDrawer, listNotifications, displayNotificationDrawer, hideNotificationDrawer, loginRequest }) => {
+const App = ({ user, isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer, loginRequest }) => {
   const logOut = () => {
     // Dispatch the action to logout
     // Clear the user data in the state
@@ -57,22 +51,9 @@ const App = ({ user, isLoggedIn, displayDrawer, listNotifications, displayNotifi
     dispatch(loginRequest(email, password));
   };
 
-  const markNotificationAsRead = (id) => {
-    // Filter the notifications to remove the one with the given id
-    const updatedNotifications = listNotifications.filter((notif) => notif.id !== id);
-    // Dispatch the action to update the notifications
-    dispatch(updateNotificationsAction(updatedNotifications));
-  };
-
   return (
     <AppContext.Provider value={{ user: user, logOut: logOut, logIn: logIn }}>
-      <Notifications
-        listNotifications={listNotifications}
-        displayDrawer={displayDrawer}
-        handleDisplayDrawer={displayNotificationDrawer}
-        handleHideDrawer={hideNotificationDrawer}
-        markNotificationAsRead={markNotificationAsRead}
-      />
+      <Notifications displayDrawer={displayDrawer} handleDisplayDrawer={displayNotificationDrawer} handleHideDrawer={hideNotificationDrawer} />
       <div className={css(styles.body)}>
         <Header />
       </div>
@@ -88,7 +69,6 @@ export const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.ui.isLoggedIn,
     displayDrawer: state.isNotificationDrawerVisible,
-    listNotifications: state.notifications,
   };
 };
 
@@ -100,14 +80,6 @@ App.propTypes = {
   }),
   isLoggedIn: PropTypes.bool,
   displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      type: PropTypes.string,
-      value: PropTypes.string,
-      html: PropTypes.shape({ __html: PropTypes.string }),
-    })
-  ),
   displayNotificationDrawer: PropTypes.func.isRequired,
   hideNotificationDrawer: PropTypes.func.isRequired,
   loginRequest: PropTypes.func.isRequired,
@@ -117,7 +89,6 @@ App.defaultProps = {
   user: null,
   isLoggedIn: false,
   displayDrawer: false,
-  listNotifications: [],
 };
 
 export default connect(mapStateToProps, { displayNotificationDrawer, hideNotificationDrawer, loginRequest })(App);
