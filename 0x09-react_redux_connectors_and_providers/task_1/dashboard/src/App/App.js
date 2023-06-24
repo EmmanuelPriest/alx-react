@@ -44,31 +44,6 @@ const listNotifications = [
 ];
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: {
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      },
-      listNotifications: listNotifications,
-    };
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
-    this.logOut = this.logOut.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
-  }
-
-  handleDisplayDrawer() {
-    this.props.displayNotificationDrawer();
-  }
-
-  handleHideDrawer() {
-    this.props.hideNotificationDrawer();
-  }
-
   logOut() {
     this.setState({
       user: {
@@ -90,21 +65,22 @@ class App extends Component {
   }
 
   markNotificationAsRead(id) {
-    const updatedNotifications = this.state.listNotifications.filter((notif) => notif.id !== id);
-    this.setState({ listNotifications: updatedNotifications });
+    const updatedNotifications = this.props.listNotifications.filter((notif) => notif.id !== id);
+    // Update the notifications using the action creator
+    this.props.markNotificationAsRead(updatedNotifications);
   }
 
   render() {
-    const { user, listNotifications } = this.state;
+    const { user } = this.props;
     const { isLoggedIn, displayDrawer } = this.props;
 
     return (
       <AppContext.Provider value={{ user: user, logOut: this.logOut, logIn: this.logIn }}>
         <Notifications
-          listNotifications={listNotifications}
+          listNotifications={this.props.listNotifications}
           displayDrawer={displayDrawer}
-          handleDisplayDrawer={this.handleDisplayDrawer}
-          handleHideDrawer={this.handleHideDrawer}
+          handleDisplayDrawer={this.props.displayNotificationDrawer}
+          handleHideDrawer={this.props.hideNotificationDrawer}
           markNotificationAsRead={this.markNotificationAsRead}
         />
         <div className={css(styles.body)}>
@@ -123,17 +99,18 @@ export const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.ui.isLoggedIn,
     displayDrawer: state.isNotificationDrawerVisible,
+    listNotifications: state.notifications,
   };
 };
 
 App.propTypes = {
+  user: PropTypes.shape({
+    email: PropTypes.string,
+    password: PropTypes.string,
+    isLoggedIn: PropTypes.bool,
+  }),
   isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-  logIn: PropTypes.func,
   displayDrawer: PropTypes.bool,
-  handleDisplayDrawer: PropTypes.func,
-  handleHideDrawer: PropTypes.func,
-  markNotificationAsRead: PropTypes.func,
   listNotifications: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -142,6 +119,16 @@ App.propTypes = {
       html: PropTypes.shape({ __html: PropTypes.string }),
     })
   ),
+  displayNotificationDrawer: PropTypes.func.isRequired,
+  hideNotificationDrawer: PropTypes.func.isRequired,
+  markNotificationAsRead: PropTypes.func.isRequired,
+};
+
+App.defaultProps = {
+  user: null,
+  isLoggedIn: false,
+  displayDrawer: false,
+  listNotifications: [],
 };
 
 export default connect(mapStateToProps, { displayNotificationDrawer, hideNotificationDrawer })(App);
