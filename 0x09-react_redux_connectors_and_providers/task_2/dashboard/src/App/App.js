@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -10,7 +10,7 @@ import { getLatestNotification } from '../utils/utils';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import { AppContext } from '../App/AppContext';
 import { connect } from 'react-redux';
-import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
+import { displayNotificationDrawer, hideNotificationDrawer, loginRequest } from '../actions/uiActionCreators';
 
 const styles = StyleSheet.create({
   body: {
@@ -43,57 +43,46 @@ const listNotifications = [
   { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
 ];
 
-class App extends Component {
-  logOut() {
-    this.setState({
-      user: {
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      },
-    });
-  }
+const App = ({ user, isLoggedIn, displayDrawer, listNotifications, displayNotificationDrawer, hideNotificationDrawer, loginRequest }) => {
+  const logOut = () => {
+    // Dispatch the action to logout
+    // Clear the user data in the state
+    dispatch(logoutAction());
+    dispatch(clearUserDataAction());
+  };
 
-  logIn(email, password) {
-    this.setState({
-      user: {
-        email: email,
-        password: password,
-        isLoggedIn: true,
-      },
-    });
-  }
+  const logIn = (email, password) => {
+    // Dispatch the action to login
+    // Pass the email and password to the action creator
+    dispatch(loginRequest(email, password));
+  };
 
-  markNotificationAsRead(id) {
-    const updatedNotifications = this.props.listNotifications.filter((notif) => notif.id !== id);
-    // Update the notifications using the action creator
-    this.props.markNotificationAsRead(updatedNotifications);
-  }
+  const markNotificationAsRead = (id) => {
+    // Filter the notifications to remove the one with the given id
+    const updatedNotifications = listNotifications.filter((notif) => notif.id !== id);
+    // Dispatch the action to update the notifications
+    dispatch(updateNotificationsAction(updatedNotifications));
+  };
 
-  render() {
-    const { user } = this.props;
-    const { isLoggedIn, displayDrawer } = this.props;
-
-    return (
-      <AppContext.Provider value={{ user: user, logOut: this.logOut, logIn: this.logIn }}>
-        <Notifications
-          listNotifications={this.props.listNotifications}
-          displayDrawer={displayDrawer}
-          handleDisplayDrawer={this.props.displayNotificationDrawer}
-          handleHideDrawer={this.props.hideNotificationDrawer}
-          markNotificationAsRead={this.markNotificationAsRead}
-        />
-        <div className={css(styles.body)}>
-          <Header />
-        </div>
-        <BodySectionWithMarginBottom title="Course list">
-          {isLoggedIn ? <CourseList listCourses={listCourses} /> : <Login />}
-        </BodySectionWithMarginBottom>
-        <Footer className={css(styles.footer)} />
-      </AppContext.Provider>
-    );
-  }
-}
+  return (
+    <AppContext.Provider value={{ user: user, logOut: logOut, logIn: logIn }}>
+      <Notifications
+        listNotifications={listNotifications}
+        displayDrawer={displayDrawer}
+        handleDisplayDrawer={displayNotificationDrawer}
+        handleHideDrawer={hideNotificationDrawer}
+        markNotificationAsRead={markNotificationAsRead}
+      />
+      <div className={css(styles.body)}>
+        <Header />
+      </div>
+      <BodySectionWithMarginBottom title="Course list">
+        {isLoggedIn ? <CourseList listCourses={listCourses} /> : <Login login={loginRequest} />}
+      </BodySectionWithMarginBottom>
+      <Footer className={css(styles.footer)} />
+    </AppContext.Provider>
+  );
+};
 
 export const mapStateToProps = (state) => {
   return {
@@ -121,7 +110,7 @@ App.propTypes = {
   ),
   displayNotificationDrawer: PropTypes.func.isRequired,
   hideNotificationDrawer: PropTypes.func.isRequired,
-  markNotificationAsRead: PropTypes.func.isRequired,
+  loginRequest: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
@@ -131,4 +120,4 @@ App.defaultProps = {
   listNotifications: [],
 };
 
-export default connect(mapStateToProps, { displayNotificationDrawer, hideNotificationDrawer })(App);
+export default connect(mapStateToProps, { displayNotificationDrawer, hideNotificationDrawer, loginRequest })(App);

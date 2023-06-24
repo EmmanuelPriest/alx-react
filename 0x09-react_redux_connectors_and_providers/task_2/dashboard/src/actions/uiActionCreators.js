@@ -4,7 +4,8 @@ import {
   DISPLAY_NOTIFICATION_DRAWER,
   HIDE_NOTIFICATION_DRAWER,
   LOGIN_SUCCESS,
-  LOGIN_FAILURE
+  LOGIN_FAILURE,
+  LOGIN_REQUEST
 } from './uiActionTypes';
 
 export const login = (email, password) => ({
