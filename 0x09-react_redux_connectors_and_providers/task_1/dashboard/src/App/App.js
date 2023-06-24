@@ -10,6 +10,7 @@ import { getLatestNotification } from '../utils/utils';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import { AppContext } from '../App/AppContext';
 import { connect } from 'react-redux';
+import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
 
 const styles = StyleSheet.create({
   body: {
@@ -61,11 +62,11 @@ class App extends Component {
   }
 
   handleDisplayDrawer() {
-    this.setState({ displayDrawer: true });
+    this.props.displayNotificationDrawer();
   }
 
   handleHideDrawer() {
-    this.setState({ displayDrawer: false });
+    this.props.hideNotificationDrawer();
   }
 
   logOut() {
@@ -143,4 +144,4 @@ App.propTypes = {
   ),
 };
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, { displayNotificationDrawer, hideNotificationDrawer })(App);
