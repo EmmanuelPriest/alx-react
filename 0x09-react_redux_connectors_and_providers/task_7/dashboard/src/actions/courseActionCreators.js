@@ -1,4 +1,4 @@
-import { SELECT_COURSE, UNSELECT_COURSE } from './courseActionTypes';
+import { SELECT_COURSE, UNSELECT_COURSE, SET_COURSES } from './courseActionTypes';
 
 export const selectCourse = (index) => ({
   type: SELECT_COURSE,
@@ -17,3 +17,17 @@ export const boundSelectCourse = (index) => dispatch => {
 export const boundUnSelectCourse = (index) => dispatch => {
   dispatch(unSelectCourse(index));
 };
+
+export const fetchCourses = () => {
+  return dispatch => {
+    return fetch('task_7/dashboard/dist/courses.json')
+      .then(response => response.json())
+      .then(data => dispatch(setCourses(data)))
+      .catch(error => console.log('Error fetching courses:', error));
+  };
+};
+
+export const setCourses = courses => ({
+  type: SET_COURSES,
+  courses,
+});
