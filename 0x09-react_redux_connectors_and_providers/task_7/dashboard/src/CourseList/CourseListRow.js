@@ -20,12 +20,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const CourseListRow = ({ isHeader, textFirstCell, textSecondCell }) => {
-  const [isChecked, setIsChecked] = useState(false);
-  const rowStyle = css(styles.row, isHeader && styles.headerRow, isChecked && styles.rowChecked);
+const CourseListRow = ({ isHeader, textFirstCell, textSecondCell, isChecked, onChangeRow }) => {
+  const rowStyle = css(
+    styles.row,
+    isHeader && styles.headerRow,
+    isChecked && styles.rowChecked
+  );
 
   const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+    onChangeRow(textFirstCell, !isChecked);
   };
 
   if (isHeader) {
@@ -63,11 +66,15 @@ CourseListRow.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
+  isChecked: PropTypes.bool,
+  onChangeRow: PropTypes.func,
 };
 
 CourseListRow.defaultProps = {
   isHeader: false,
   textSecondCell: null,
+  isChecked: false,
+  onChangeRow: () => {},
 };
 
 export default CourseListRow;
