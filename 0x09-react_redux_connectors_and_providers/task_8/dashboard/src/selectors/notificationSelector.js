@@ -15,9 +15,9 @@ export const getUnreadNotificationsByType = createSelector(
   filterTypeSelected,
   getUnreadNotifications,
   (filterType, unreadNotifications) => {
-    if (filterType === 'default') {
+    if (filterType === 'DEFAULT') {
       return unreadNotifications;
-    } else if (filterType === 'urgent') {
+    } else if (filterType === 'URGENT') {
       return unreadNotifications.filter(notification => notification.get('isUrgent'));
     } else {
       return unreadNotifications;

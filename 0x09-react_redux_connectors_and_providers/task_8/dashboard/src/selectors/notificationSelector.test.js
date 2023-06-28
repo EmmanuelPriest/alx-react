@@ -3,6 +3,7 @@ import {
   filterTypeSelected,
   getNotifications,
   getUnreadNotifications,
+  getUnreadNotificationsByType,
 } from './notificationSelector';
 
 describe('notificationSelector', () => {
@@ -35,5 +36,10 @@ describe('notificationSelector', () => {
       { id: 1, isRead: false },
       { id: 3, isRead: false },
     ]);
+  });
+
+  it('should return the list of unread urgent notifications when the filter is set', () => {
+    const unreadNotificationsByType = getUnreadNotificationsByType(initialState);
+    expect(unreadNotificationsByType.toJS()).toEqual([{ id: 3, isRead: false }]);
   });
 });
