@@ -3,7 +3,13 @@ import App, { mapStateToProps } from './App';
 import { shallow } from 'enzyme';
 import { StyleSheetTestUtils } from 'aphrodite';
 import { AppContext } from './AppContext';
-import { displayNotificationDrawer, hideNotificationDrawer } from '../actions/uiActionCreators';
+import {
+  displayNotificationDrawer,
+  hideNotificationDrawer,
+  loginRequest,
+  logoutAction,
+  clearUserDataAction,
+} from '../actions/uiActionCreators';
 
 describe('Test App.js', () => {
   beforeAll(() => {

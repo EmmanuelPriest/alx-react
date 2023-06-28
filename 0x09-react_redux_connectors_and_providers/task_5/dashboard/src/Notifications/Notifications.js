@@ -1,7 +1,6 @@
-import React, { PureComponent, componentDidMount } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import NotificationItem from './NotificationItem';
-import NotificationItemShape from './NotificationItemShape';
 import closeIcon from '../assets/close-icon.png';
 import { StyleSheet, css, keyframes } from 'aphrodite';
 
@@ -87,23 +86,22 @@ class Notifications extends PureComponent {
                 position: 'absolute',
                 right: 20,
               }}
-              aria-label='close'
+              aria-label="close"
             >
-              <img src={closeIcon} alt='close-icon' />
+              <img src={closeIcon} alt="close-icon" />
             </button>
             <p>Here is the list of notifications</p>
             <ul className={css(styles.ul)}>
               {listNotifications.length === 0 && (
-                <NotificationItem value='No new notification for now' />
+                <NotificationItem value="No new notification for now" />
               )}
-
               {listNotifications.map((notification) => (
                 <NotificationItem
                   key={notification.id}
                   type={notification.type}
                   value={notification.value}
                   html={notification.html}
-                  markNotificationAsRead={this.markNotificationAsRead}
+                  markNotificationAsRead={() => this.markNotificationAsRead(notification.id)}
                   id={notification.id}
                 />
               ))}
@@ -125,7 +123,16 @@ Notifications.defaultProps = {
 
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  listNotifications: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      type: PropTypes.string.isRequired,
+      value: PropTypes.string,
+      html: PropTypes.shape({
+        __html: PropTypes.string,
+      }),
+    })
+  ),
   handleDisplayDrawer: PropTypes.func,
   handleHideDrawer: PropTypes.func,
   markNotificationAsRead: PropTypes.func,

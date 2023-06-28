@@ -1,5 +1,5 @@
 // notificationReducer.test.js
-import { MARK_AS_READ, SET_TYPE_FILTER, FETCH_NOTIFICATIONS_SUCCESS } from '../actions/notificationActionTypes';
+import { MARK_AS_READ, SET_TYPE_FILTER, FETCH_NOTIFICATIONS_SUCCESS, SET_LOADING_STATE } from '../actions/notificationActionTypes';
 import notificationReducer from './notificationReducer';
 import { notificationsNormalizer } from '../schema/notifications';
 import { fromJS } from 'immutable';
@@ -9,6 +9,7 @@ describe('notificationReducer', () => {
     const initialState = fromJS({
       filter: 'DEFAULT',
       notifications: [],
+      loading: false,
     });
     const state = notificationReducer(undefined, {});
     expect(state).toEqual(initialState);
@@ -18,6 +19,7 @@ describe('notificationReducer', () => {
     const initialState = fromJS({
       filter: 'DEFAULT',
       notifications: [],
+      loading: false,
     });
     const data = [
       {
@@ -53,6 +55,7 @@ describe('notificationReducer', () => {
         { id: 1, isRead: false },
         { id: 2, isRead: false },
       ],
+      loading: false,
     });
     const action = {
       type: MARK_AS_READ,
@@ -67,12 +70,28 @@ describe('notificationReducer', () => {
     const initialState = fromJS({
       filter: 'DEFAULT',
       notifications: [],
+      loading: false,
     });
     const action = {
       type: SET_TYPE_FILTER,
       filter: 'urgent',
     };
     const expectedState = initialState.set('filter', 'urgent');
+    const state = notificationReducer(initialState, action);
+    expect(state).toEqual(expectedState);
+  });
+
+  it('should handle SET_LOADING_STATE and update the loading property of the state', () => {
+    const initialState = fromJS({
+      filter: 'DEFAULT',
+      notifications: [],
+      loading: false,
+    });
+    const action = {
+      type: SET_LOADING_STATE,
+      loading: true,
+    };
+    const expectedState = initialState.set('loading', true);
     const state = notificationReducer(initialState, action);
     expect(state).toEqual(expectedState);
   });
