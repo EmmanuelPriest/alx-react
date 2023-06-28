@@ -1,0 +1,23 @@
+.course-list {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.course-list th, .course-list td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.course-list th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.course-list tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.course-list tr:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
